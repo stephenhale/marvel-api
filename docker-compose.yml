@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+    nginx:
+        image: nginx:1.13.6
+        container_name: marvel-api-nginx
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - php
+        volumes:
+            - ./src:/app
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+
+    php:
+        image: php:7.1-fpm
+        container_name: marvel-api-php
+        working_dir: /app
+        volumes:
+            - ./src:/app
+
+    composer:
+        image: composer:1.5.2
+        container_name: marvel-api-composer
+        command: install
+        volumes:
+            - ./src:/app
+
+    node:
+        image: node:9
+        container_name: marvel-api-node
+        working_dir: /app
+        environment:
+            NODE_ENV: development
+        volumes:
+            - ./src:/app
